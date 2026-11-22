@@ -4,4 +4,4 @@ Wingsuit flying in the browser. Exit above the cloud deck, free-fall, open the w
 
 **Play:** https://projectskyfall.io
 
-Version v8.5 · Released 21 November 2026 · © 2026 Unethical Group. All rights reserved. Project Skyfall™ by Unethical Studios (https://unethicalstudios.com). See COPYRIGHT.txt and CREDITS.txt.
+Version v9.5 · Released 21 November 2026 · © 2026 Unethical Group. All rights reserved. Project Skyfall™ by Unethical Studios (https://unethicalstudios.com). See COPYRIGHT.txt and CREDITS.txt.
