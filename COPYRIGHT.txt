@@ -1,7 +1,7 @@
-Skyfall v8.3
+Project Skyfall v8.5
 © 2026 Unethical Group. All rights reserved.
 
-Skyfall™ and the Unethical Studios name and logo are trademarks of Unethical Group.
+Project Skyfall™ and the Unethical Studios name and logo are trademarks of Unethical Group.
 The game, its code, art, sound and text are protected by copyright. You may play it.
 You may not copy, re-host, modify, sell or redistribute it, or use it to train AI models,
 without written permission. Third-party assets keep their own licences: see CREDITS.txt.

@@ -1,4 +1,4 @@
-Skyfall · third-party credits
+Project Skyfall · third-party credits
 
 Textures and rock models: Poly Haven (https://polyhaven.com), CC0 1.0.
   rock_07, rock_09, boulder_01, rock_moss_set_01, namaqualand_boulder_02, rock_boulder_dry, cliff_side,
