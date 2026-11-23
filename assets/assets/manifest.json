@@ -1,0 +1,419 @@
+{
+ "rocks": [
+  {
+   "name": "rock_07_0",
+   "tex": "rock_07",
+   "height": 0.897,
+   "tris": [
+    6000,
+    1200,
+    180
+   ]
+  },
+  {
+   "name": "rock_09_0",
+   "tex": "rock_09",
+   "height": 0.455,
+   "tris": [
+    6000,
+    1200,
+    180
+   ]
+  },
+  {
+   "name": "boulder_01_0",
+   "tex": "boulder_01",
+   "height": 1.097,
+   "tris": [
+    5774,
+    1036,
+    163
+   ]
+  },
+  {
+   "name": "rock_moss_set_01_0",
+   "tex": "rock_moss_set_01",
+   "height": 0.874,
+   "tris": [
+    6000,
+    1200,
+    180
+   ]
+  },
+  {
+   "name": "rock_moss_set_01_1",
+   "tex": "rock_moss_set_01",
+   "height": 0.773,
+   "tris": [
+    6000,
+    1200,
+    264
+   ]
+  },
+  {
+   "name": "rock_moss_set_01_2",
+   "tex": "rock_moss_set_01",
+   "height": 1.043,
+   "tris": [
+    5000,
+    1200,
+    180
+   ]
+  },
+  {
+   "name": "rock_moss_set_01_3",
+   "tex": "rock_moss_set_01",
+   "height": 1.662,
+   "tris": [
+    5999,
+    1199,
+    179
+   ]
+  },
+  {
+   "name": "rock_moss_set_01_4",
+   "tex": "rock_moss_set_01",
+   "height": 0.804,
+   "tris": [
+    6000,
+    1200,
+    180
+   ]
+  },
+  {
+   "name": "rock_moss_set_01_5",
+   "tex": "rock_moss_set_01",
+   "height": 0.915,
+   "tris": [
+    6000,
+    1200,
+    180
+   ]
+  },
+  {
+   "name": "namaqualand_boulder_02_0",
+   "tex": "namaqualand_boulder_02",
+   "height": 0.697,
+   "tris": [
+    6000,
+    1198,
+    156
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "id": "rock_07",
+   "type": "model",
+   "use": "scattered boulders (decimated LODs)",
+   "url": "https://polyhaven.com/a/rock_07"
+  },
+  {
+   "id": "rock_09",
+   "type": "model",
+   "use": "scattered boulders (decimated LODs)",
+   "url": "https://polyhaven.com/a/rock_09"
+  },
+  {
+   "id": "boulder_01",
+   "type": "model",
+   "use": "scattered boulders (decimated LODs)",
+   "url": "https://polyhaven.com/a/boulder_01"
+  },
+  {
+   "id": "rock_moss_set_01",
+   "type": "model",
+   "use": "scattered boulders (decimated LODs)",
+   "url": "https://polyhaven.com/a/rock_moss_set_01"
+  },
+  {
+   "id": "namaqualand_boulder_02",
+   "type": "model",
+   "use": "scattered boulders (decimated LODs)",
+   "url": "https://polyhaven.com/a/namaqualand_boulder_02"
+  },
+  {
+   "id": "rock_boulder_dry",
+   "type": "texture",
+   "use": "terrain layer 0: massive grey rock",
+   "url": "https://polyhaven.com/a/rock_boulder_dry"
+  },
+  {
+   "id": "cliff_side",
+   "type": "texture",
+   "use": "terrain layer 1: stratified cliff",
+   "url": "https://polyhaven.com/a/cliff_side"
+  },
+  {
+   "id": "rock_face_03",
+   "type": "texture",
+   "use": "terrain layer 2: fractured brown rock",
+   "url": "https://polyhaven.com/a/rock_face_03"
+  },
+  {
+   "id": "mossy_rock",
+   "type": "texture",
+   "use": "terrain layer 3: lichen rock",
+   "url": "https://polyhaven.com/a/mossy_rock"
+  },
+  {
+   "id": "river_small_rocks",
+   "type": "texture",
+   "use": "terrain layer 4: scree / riverbed",
+   "url": "https://polyhaven.com/a/river_small_rocks"
+  },
+  {
+   "id": "forest_ground_04",
+   "type": "texture",
+   "use": "terrain layer 5: dirt / forest floor",
+   "url": "https://polyhaven.com/a/forest_ground_04"
+  },
+  {
+   "id": "rocky_terrain_02",
+   "type": "texture",
+   "use": "terrain layer 6: alpine grass",
+   "url": "https://polyhaven.com/a/rocky_terrain_02"
+  },
+  {
+   "id": "leafy_grass",
+   "type": "texture",
+   "use": "terrain layer 7: meadow",
+   "url": "https://polyhaven.com/a/leafy_grass"
+  },
+  {
+   "id": "snow_02",
+   "type": "texture",
+   "use": "terrain layer 8: snow",
+   "url": "https://polyhaven.com/a/snow_02"
+  },
+  {
+   "id": "aerial_rocks_02",
+   "type": "texture",
+   "use": "terrain layer 9: macro variation",
+   "url": "https://polyhaven.com/a/aerial_rocks_02"
+  },
+  {
+   "id": "fir_tree_01",
+   "type": "model textures",
+   "use": "fir twig atlas + bark (geometry is procedural)",
+   "url": "https://polyhaven.com/a/fir_tree_01"
+  },
+  {
+   "id": "pine_tree_01",
+   "type": "model textures",
+   "use": "pine twig atlas + bark (geometry is procedural)",
+   "url": "https://polyhaven.com/a/pine_tree_01"
+  },
+  {
+   "id": "tree_small_02",
+   "type": "model textures",
+   "use": "birch twig atlas + bark (geometry is procedural)",
+   "url": "https://polyhaven.com/a/tree_small_02"
+  }
+ ],
+ "terrainLayers": [
+  {
+   "id": "rock_boulder_dry",
+   "role": "massive grey rock",
+   "avg": [
+    0.6576,
+    0.609,
+    0.5501
+   ]
+  },
+  {
+   "id": "cliff_side",
+   "role": "stratified cliff",
+   "avg": [
+    0.4858,
+    0.3235,
+    0.1936
+   ]
+  },
+  {
+   "id": "rock_face_03",
+   "role": "fractured brown rock",
+   "avg": [
+    0.5133,
+    0.4116,
+    0.3152
+   ]
+  },
+  {
+   "id": "mossy_rock",
+   "role": "lichen rock",
+   "avg": [
+    0.4251,
+    0.4181,
+    0.34
+   ]
+  },
+  {
+   "id": "river_small_rocks",
+   "role": "scree / riverbed",
+   "avg": [
+    0.4731,
+    0.4238,
+    0.3562
+   ]
+  },
+  {
+   "id": "forest_ground_04",
+   "role": "dirt / forest floor",
+   "avg": [
+    0.4168,
+    0.3521,
+    0.2654
+   ]
+  },
+  {
+   "id": "rocky_terrain_02",
+   "role": "alpine grass",
+   "avg": [
+    0.3133,
+    0.3075,
+    0.1101
+   ]
+  },
+  {
+   "id": "leafy_grass",
+   "role": "meadow",
+   "avg": [
+    0.5922,
+    0.5151,
+    0.3495
+   ]
+  },
+  {
+   "id": "snow_02",
+   "role": "snow",
+   "avg": [
+    0.6478,
+    0.6475,
+    0.6553
+   ]
+  },
+  {
+   "id": "aerial_rocks_02",
+   "role": "macro variation",
+   "avg": [
+    0.4307,
+    0.3627,
+    0.2051
+   ]
+  }
+ ],
+ "sprites": {
+  "fir": [
+   {
+    "u0": 0.3066,
+    "v0": 0.4004,
+    "u1": 0.6406,
+    "v1": 0.7754,
+    "fill": 0.21
+   },
+   {
+    "u0": 0.6348,
+    "v0": 0.4531,
+    "u1": 0.9551,
+    "v1": 0.8301,
+    "fill": 0.17
+   },
+   {
+    "u0": 0.6523,
+    "v0": 0.043,
+    "u1": 0.9355,
+    "v1": 0.3691,
+    "fill": 0.15
+   },
+   {
+    "u0": 0.1895,
+    "v0": 0.0469,
+    "u1": 0.4277,
+    "v1": 0.3125,
+    "fill": 0.15
+   },
+   {
+    "u0": 0.4941,
+    "v0": 0.2617,
+    "u1": 0.6309,
+    "v1": 0.4004,
+    "fill": 0.29
+   },
+   {
+    "u0": 0.3867,
+    "v0": 0.291,
+    "u1": 0.459,
+    "v1": 0.3828,
+    "fill": 0.34
+   }
+  ],
+  "pine": [
+   {
+    "u0": 0.0352,
+    "v0": 0.0449,
+    "u1": 0.2168,
+    "v1": 0.4414,
+    "fill": 0.28
+   },
+   {
+    "u0": 0.6523,
+    "v0": 0.3418,
+    "u1": 0.9355,
+    "v1": 0.5176,
+    "fill": 0.32
+   },
+   {
+    "u0": 0.9219,
+    "v0": 0.7891,
+    "u1": 1,
+    "v1": 0.9688,
+    "fill": 0.24
+   },
+   {
+    "u0": 0.7168,
+    "v0": 0.5605,
+    "u1": 0.8496,
+    "v1": 0.7715,
+    "fill": 0.1
+   }
+  ],
+  "birch": [
+   {
+    "u0": 0,
+    "v0": 0,
+    "u1": 0.3828,
+    "v1": 0.2832,
+    "fill": 0.32
+   },
+   {
+    "u0": 0.0508,
+    "v0": 0.6992,
+    "u1": 0.252,
+    "v1": 0.8535,
+    "fill": 0.44
+   },
+   {
+    "u0": 0.2402,
+    "v0": 0.748,
+    "u1": 0.4414,
+    "v1": 0.873,
+    "fill": 0.49
+   },
+   {
+    "u0": 0,
+    "v0": 0.8457,
+    "u1": 0.2285,
+    "v1": 1,
+    "fill": 0.26
+   },
+   {
+    "u0": 0.1934,
+    "v0": 0,
+    "u1": 0.3711,
+    "v1": 0.1445,
+    "fill": 0.24
+   }
+  ]
+ }
+}

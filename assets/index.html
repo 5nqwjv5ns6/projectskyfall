@@ -1,0 +1,162 @@
+<!doctype html>
+<!-- Project Skyfall v9.5 · © 2026 Unethical Group. All rights reserved. Project Skyfall™ by Unethical Studios (https://unethicalstudios.com). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#05070a">
+<title>Project Skyfall · Wingsuit flying in your browser</title>
+<meta name="description" content="Jump from above the clouds and fly a wingsuit down procedurally generated mountains. Thread the rings, skim the ridges, pull the chute and land on the target. Free, in your browser, no download.">
+<link rel="canonical" href="https://projectskyfall.io/">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon-64.png" sizes="64x64" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Project Skyfall">
+<meta property="og:title" content="Project Skyfall · Wingsuit flying in your browser">
+<meta property="og:description" content="Jump from above the clouds and fly a wingsuit down procedurally generated mountains. Thread the rings, skim the ridges, pull the chute and land on the target. Free, in your browser, no download.">
+<meta property="og:url" content="https://projectskyfall.io/">
+<meta property="og:image" content="https://projectskyfall.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Project Skyfall: a wingsuit pilot flying low over an alpine valley">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Project Skyfall · Wingsuit flying in your browser">
+<meta name="twitter:description" content="Jump from above the clouds and fly a wingsuit down procedurally generated mountains. Thread the rings, skim the ridges, pull the chute and land on the target. Free, in your browser, no download.">
+<meta name="twitter:image" content="https://projectskyfall.io/og.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Project Skyfall", "url": "https://projectskyfall.io/", "datePublished": "2026-11-21", "genre": ["Sports", "Flight", "Simulation"], "gamePlatform": "Web browser", "applicationCategory": "Game", "operatingSystem": "Any", "isAccessibleForFree": true, "image": "https://projectskyfall.io/og.jpg", "description": "Jump from above the clouds and fly a wingsuit down procedurally generated mountains. Thread the rings, skim the ridges, pull the chute and land on the target. Free, in your browser, no download.", "inLanguage": "en", "publisher": {"@type": "Organization", "name": "Unethical Studios", "url": "https://unethicalstudios.com/"}}</script>
+  <script type="module" crossorigin src="./assets/index-Bcu-XILK-9214bc.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/autopilot-DHiilXQt.js">
+  <link rel="stylesheet" crossorigin href="./assets/index-B-0Q2lBe.css">
+<style>#hud.intense:after{right:auto;left:50%;transform:translateX(-50%);bottom:1.2vh}</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="ui"></div>
+<noscript><p style="position:fixed;inset:0;display:grid;place-items:center;margin:0;color:#eef2f4;font:16px system-ui,sans-serif">Project Skyfall needs JavaScript and WebGL2.</p></noscript>
+<script>/* Project Skyfall radio: streams the playlist from YouTube through YouTube's own embedded player.
+   Nothing is hosted here; plays go to the official uploads. The player stays visible while it plays
+   (YouTube requires an embedded player of at least 200x200), and closes when the radio is paused.
+   Songs a player adds from their own device still play through the game's audio as before. */
+(function(){
+  var LIST=[["cE0wfjsybIQ", "Noisestorm - Crab Rave"], ["gCYcHz2k5x0", "Martin Garrix - Animals"], ["K_yBUfMGvzc", "Deorro - Five Hours"], ["iLBBRuVDOo4", "Vicetone & Tony Igy - Astronomia"], ["uiyUOrr5Ieo", "Martin Garrix - Bouncybob (Feat. Justin Mylo & Mesto)"], ["jjx2oc2NRzA", "Oliver Heldens - Gecko"], ["AnMhdn0wJ4I", "Vicetone - Nevada (ft. Cozi Zuehlsdorff)"], ["JbyX8NE1Was", "Martin Garrix - Proxy"], ["y6120QOlsfU", "Darude - Sandstorm"], ["y5tMw-dgLkI", "Oliver Heldens - Koala"], ["AWpLZtdeBgQ", "Timmy Trumpet & Savage - Freaks"], ["a0fkNdPiIL4", "Benny Benassi - Satisfaction"], ["gl2p4G3CUrI", "Steve Aoki, Chris Lake & Tujamo - Boneless"], ["9vMh9f41pqE", "Dimitri Vegas, Martin Garrix, Like Mike - Tremor"], ["o_VASDmGEtM", "Nuplasma Disney Store - Now or Never..."], ["I41CX0RdmPQ", "DVBBS & Borgeous - TSUNAMI"], ["_o-XIryB2gg", "Dimitri Vegas, MOGUAI & Like Mike - Mammoth"], ["114rxHa0qzo", "Exyl - Egg"], ["jwGKL4KwQYY", "akiaura, LONOWN, Baby Jane - Deathwish (Sped Up)"], ["YJVmu6yttiw", "SKRILLEX - Bangarang feat. Sirah"], ["Oy9V_4im0wg", "Don Diablo - Cutting Shapes"], ["souJM4aCk6w", "Tujamo - Drop That Low (When I Dip)"], ["u31thuMehjM", "FISHER - Losing It"], ["zyXmsVwZqX4", "Cartoon, Jéja - Why We Lose (feat. Coleman Trapp)"], ["j7QyRa1HLcU", "rivoices - etérea"], ["NFB6Y2Qt8ag", "Tokyo Machine - ROCK IT"], ["6y_NJg-xoeE", "Nitro Fun - New Game"], ["XoLouT7TqZY", "MDK - Press Start"], ["Qg1qZq5yjps", "Teminite & Panda Eyes - Highscore"]];
+  // the radio streams from YouTube, so it is free: no ad to unlock it
+  try{if(!localStorage.getItem('skyfall.radio'))localStorage.setItem('skyfall.radio',JSON.stringify({unlocked:true,t:Date.now()}))}catch(e){}
+  var HOST='https://www.youtube-nocookie.com';
+  var yt=null, ytReady=null, box=null, curId='', wantVol=-1, loadT=0;
+
+  function css(){
+    var s=document.createElement('style');
+    s.textContent='#sfYT{position:fixed;z-index:60;left:16px;bottom:16px;width:200px;height:200px;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 8px 30px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);transition:opacity .3s,transform .3s,left .25s,top .25s}'+
+      '#sfYT.off{opacity:0;transform:translateY(12px);pointer-events:none}#sfYT iframe{width:200px;height:200px;display:block}'+
+      '#sfYT .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font:14px/24px system-ui;cursor:pointer;z-index:2}'+
+      '#sfYT .lab{position:absolute;left:8px;top:8px;z-index:2;font:600 10px/1 system-ui;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,.55);padding:4px 6px;border-radius:4px;pointer-events:none}'+
+      '@media (max-height:520px){#sfYT{left:10px;bottom:10px}}';
+    document.head.appendChild(s);
+  }
+  function guard(el){['keydown','keyup','pointerdown','pointerup','touchstart','touchend','wheel'].forEach(function(t){el.addEventListener(t,function(e){e.stopPropagation()})})}
+  function ensure(){
+    if(ytReady) return ytReady;
+    css();
+    box=document.createElement('div'); box.id='sfYT'; box.className='off';
+    box.innerHTML='<span class="lab">RADIO</span><button class="x" aria-label="Close radio">×</button><div id="sfYTp"></div>';
+    document.body.appendChild(box); guard(box);
+    box.querySelector('.x').onclick=function(e){e.stopPropagation();var R=window.__radio;R&&R.pause()};
+    ytReady=new Promise(function(res){
+      var prev=window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady=function(){ if(prev)try{prev()}catch(e){}
+        yt=new YT.Player('sfYTp',{host:HOST,width:200,height:200,playerVars:{playsinline:1,rel:0,modestbranding:1,controls:1,fs:0,iv_load_policy:3},
+          events:{onReady:function(){res(yt)},
+            onStateChange:function(e){var R=window.__radio;if(!R)return;
+              if(e.data===0){R.next()}                                    // ended
+              else if(e.data===1){show();if(!R.on){R.on=true;R.show()}}  // playing (also when started from YouTube's own controls)
+              else if(e.data===2&&R.on&&curIsYT()&&Date.now()-loadT>1500){R.on=false;R.show();hide()}},   // paused from YouTube's controls, not a song change
+            onError:function(){var R=window.__radio;if(R){R.show('Skipping a song YouTube will not play here');setTimeout(function(){R.next()},400)}}}});
+      };
+      var s=document.createElement('script'); s.src='https://www.youtube.com/iframe_api'; s.async=true;
+      s.onerror=function(){var R=window.__radio;R&&(R.on=false,R.show('Radio needs YouTube, which is blocked here'))};
+      document.head.appendChild(s);
+    });
+    return ytReady;
+  }
+  function curIsYT(){var R=window.__radio,t=R&&R.track;return !!(t&&t.yt)}
+  // Where the player sits: it must stay fully visible while it plays (YouTube's rule), so instead of hiding it
+  // the player moves to whichever free spot covers the least of the game's own UI: next to the radio pill
+  // while flying, out of the way of the pause menu, results, map and other menus. Re-checked every 400 ms.
+  var spot='', SZ=200, M=12;
+  function shown(el){try{if(el.checkVisibility)return el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})}catch(e){}return true}
+  function uiRects(W,H){
+    var out=[],all=document.body.getElementsByTagName('*'),big=W*H*.45;
+    for(var i=0;i<all.length;i++){
+      var el=all[i]; if(el===box||box.contains(el)) continue;
+      var tn=el.tagName; if(tn==='SCRIPT'||tn==='STYLE'||tn==='CANVAS'||tn==='NOSCRIPT') continue;
+      var r=el.getBoundingClientRect(); if(r.width<4||r.height<4||r.width*r.height>big||r.right<0||r.bottom<0||r.left>W||r.top>H) continue;
+      var txt=false; for(var c=el.firstChild;c;c=c.nextSibling) if(c.nodeType===3&&/\S/.test(c.nodeValue)){txt=true;break}
+      var ctl=/^(BUTTON|INPUT|SELECT|IMG|svg|A|LABEL|TEXTAREA)$/.test(tn);
+      if(!txt&&!ctl){var cs=getComputedStyle(el),bg=cs.backgroundColor;
+        if(!((bg&&bg!=='transparent'&&!/rgba\([^)]*,\s*0\)$/.test(bg))||cs.backgroundImage!=='none'||cs.borderTopWidth!=='0px')) continue}
+      if(!shown(el)) continue;
+      out.push(r);
+    }
+    return out;
+  }
+  function cover(x,y,R){var s=0;for(var i=0;i<R.length;i++){var r=R[i],w=Math.min(x+SZ,r.right)-Math.max(x,r.left),h=Math.min(y+SZ,r.bottom)-Math.max(y,r.top);if(w>0&&h>0)s+=w*h}return s}
+  function place(){
+    if(!box) return;
+    var W=innerWidth,H=innerHeight,C={},R=uiRects(W,H),c=function(k,x,y){C[k]=[Math.min(Math.max(8,x),W-SZ-8),Math.min(Math.max(8,y),H-SZ-8)]};
+    var p=document.getElementById('radio'),b=p&&p.getBoundingClientRect();
+    if(b&&b.width){c('pill',b.right-SZ,b.top>H/2?b.top-SZ-10:b.bottom+10);c('pillL',b.left-SZ-10,b.top+b.height/2-SZ/2)}
+    c('tl',M,M);c('tr',W-SZ-M,M);c('bl',M,H-SZ-M);c('br',W-SZ-M,H-SZ-M);
+    c('ml',M,(H-SZ)/2);c('mr',W-SZ-M,(H-SZ)/2);c('tc',(W-SZ)/2,M);c('bc',(W-SZ)/2,H-SZ-M);
+    var best='',bs=1e18,order=['pill','pillL','br','bl','tr','tl','mr','ml','bc','tc'];
+    for(var i=0;i<order.length;i++){var k=order[i];if(!C[k])continue;var v=cover(C[k][0],C[k][1],R)+i*40;if(v<bs){bs=v;best=k}}
+    // stay put unless the move clearly helps, so the player does not hop around as HUD numbers change
+    if(spot&&C[spot]&&spot!==best){var cur=cover(C[spot][0],C[spot][1],R)+order.indexOf(spot)*40;if(cur-bs<1500)best=spot}
+    spot=best; var q=C[best]; if(!q) return;
+    box.style.left=q[0]+'px'; box.style.top=q[1]+'px'; box.style.bottom='auto';
+  }
+  setInterval(function(){if(box&&!box.classList.contains('off'))place()},400);
+  addEventListener('resize',function(){box&&!box.classList.contains('off')&&place()});
+  function show(){place();box&&box.classList.remove('off')}
+  function hide(){box&&box.classList.add('off')}
+  function vol(){var R=window.__radio;if(!yt||!R||!yt.setVolume)return;var v=Math.round(Math.min(1,(R.vol==null?.7:R.vol)*(R.ducked?.3:1))*100);if(v!==wantVol){wantVol=v;try{yt.setVolume(v)}catch(e){}}}
+  function ytPause(){try{yt&&yt.pauseVideo&&yt.pauseVideo()}catch(e){}hide()}
+
+  function install(R){
+    if(R.__yt) return; R.__yt=true;
+    var O={play:R.play.bind(R),pause:R.pause.bind(R),setVol:R.setVol.bind(R),duck:R.duck.bind(R)};
+    R.loaded=false; R.list=[];
+    R.load=async function(){
+      if(!this.__ytLoaded){this.__ytLoaded=true;this.loaded=true;
+        var local=this.list.filter(function(t){return !t.yt});
+        this.list=LIST.map(function(x){return {file:'yt:'+x[0],title:x[1],yt:x[0]}}).concat(local);
+        this.arrange();}
+      return this.list.length;
+    };
+    R.play=async function(){
+      await this.load();
+      var t=this.track;
+      if(!t||!t.yt){ytPause();return O.play()}
+      try{this.a&&this.a.pause()}catch(e){}
+      this.on=true; this.cur=t; this.show();
+      var p=await ensure(); show(); vol();
+      try{ loadT=Date.now(); if(curId!==t.yt){curId=t.yt;p.loadVideoById(t.yt)} else p.playVideo() }catch(e){}
+    };
+    R.pause=function(){ if(curIsYT()){this.on=false;ytPause();this.show()} else O.pause() };
+    R.next=function(){ if(!this.list.length) return this.play(); this.i=(this.i+1)%this.list.length; this.cur=null;
+      if(this.on) this.play(); else { if(curIsYT()) curId=''; this.show() } };
+    R.prev=function(){ if(!this.list.length) return this.play(); this.i=(this.i-1+this.list.length)%this.list.length; this.cur=null;
+      if(this.on) this.play(); else this.show() };
+    R.setVol=function(v){O.setVol(v);vol()};
+    R.duck=function(e){O.duck(e);vol()};
+  }
+  (function wait(n){var R=window.__radio;if(R&&R.play&&R.arrange){install(R)}else if(n<600){setTimeout(function(){wait(n+1)},100)}})(0);
+})();
+</script>
+</body>
+</html>
