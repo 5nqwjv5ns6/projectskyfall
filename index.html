@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Project Skyfall v9.5 · © 2026 Unethical Group. All rights reserved. Project Skyfall™ by Unethical Studios (https://unethicalstudios.com). -->
+<!-- Project Skyfall v9.7.1 · © 2026 Unethical Group. All rights reserved. Project Skyfall™ by Unethical Studios (https://unethicalstudios.com). -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -30,10 +30,110 @@
 <meta name="twitter:description" content="Jump from above the clouds and fly a wingsuit down procedurally generated mountains. Thread the rings, skim the ridges, pull the chute and land on the target. Free, in your browser, no download.">
 <meta name="twitter:image" content="https://projectskyfall.io/og.jpg">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Project Skyfall", "url": "https://projectskyfall.io/", "datePublished": "2026-11-21", "genre": ["Sports", "Flight", "Simulation"], "gamePlatform": "Web browser", "applicationCategory": "Game", "operatingSystem": "Any", "isAccessibleForFree": true, "image": "https://projectskyfall.io/og.jpg", "description": "Jump from above the clouds and fly a wingsuit down procedurally generated mountains. Thread the rings, skim the ridges, pull the chute and land on the target. Free, in your browser, no download.", "inLanguage": "en", "publisher": {"@type": "Organization", "name": "Unethical Studios", "url": "https://unethicalstudios.com/"}}</script>
-  <script type="module" crossorigin src="./assets/index-Bcu-XILK-9214bc.js"></script>
+  <script type="module" crossorigin src="./assets/index-Bcu-XILK-b9ea4f.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/autopilot-DHiilXQt.js">
   <link rel="stylesheet" crossorigin href="./assets/index-B-0Q2lBe.css">
-<style>#hud.intense:after{right:auto;left:50%;transform:translateX(-50%);bottom:1.2vh}</style>
+<script>/* Project Skyfall performance governor.
+   1. First run: pick the starting quality from the GPU (window.__skfTier, read by the game's settings defaults),
+      so a MacBook Air does not start on Ultra.
+   2. While flying it watches real frame times. If the game runs below ~36 fps for a few seconds once dynamic
+      resolution is already at its floor, it steps quality down (Ultra -> High -> Medium -> Low), then lets dynamic
+      resolution go lower. The step is remembered for this browser (skyfall.perf) so the next session starts there.
+      Choosing a quality in Settings clears the memory and the governor starts again from that choice. */
+(function(){
+  // v9.6.2: the colour pass is no longer pulled toward the camera in the vertex shader. With standard depth (Firefox
+  // on a Mac) that shift is below one float step of clip z beyond ~1 km and only added rounding noise: it left far
+  // trees and terrain black and flickering. The colour pass now gets a rasterizer depth bias instead (polygon
+  // offset, 8 depth-buffer steps, in the game bundle), and the composite fills any pixel left unshaded.
+  // ?skfdiag=pull / pullbig bring the old pull back for comparison; nooffset and nofill switch the new parts off.
+  // Other rendering switches stay off unless /diag.html asks for them (?skfdiag=loose,san,vegnopre,aosafe,...).
+  var F={}; try{var fm=location.search.match(/[?&]skfdiag=([^&]*)/); if(fm) decodeURIComponent(fm[1]).split(',').forEach(function(k){if(k)F[k]=1})}catch(e){}
+  if(F.pullbig)F.pull=1; window.__skfFlags=F; var DF={}; if(F.loose)DF.SKF_LOOSE=1; if(F.san)DF.SKF_SAN=1; window.__skfDefs=DF;
+  window.__skfMainVS=function(vs){var i=vs.lastIndexOf('}');if(i<0)return vs;
+    return vs.slice(0,i)+'\n  { const float skfS = '+((window.__skfFlags||{}).pullbig?'0.999':'0.9999')+'; float skfB = projectionMatrix[3][2]; gl_Position = vec4(gl_Position.xy * skfS, skfS * (gl_Position.z - skfB) + skfB, gl_Position.w * skfS); }\n'+vs.slice(i)};
+  var Q=['medium','high','ultra','cinematic'], KEY='skyfall.perf';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return {}}}
+  function save(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+  var gpu='';
+  try{var c=document.createElement('canvas').getContext('webgl2'),d=c&&c.getExtension('WEBGL_debug_renderer_info');gpu=d?String(c.getParameter(d.UNMASKED_RENDERER_WEBGL)):'';var lc=c&&c.getExtension('WEBGL_lose_context');lc&&lc.loseContext()}catch(e){}
+  var tier='ultra';
+  if(/SwiftShader|llvmpipe|Software|Basic Render|UHD|HD Graphics|Mali|PowerVR/i.test(gpu)) tier='medium';
+  else if(/Intel|Iris|Adreno|Radeon\(TM\) Graphics|Vega \d|Radeon Graphics/i.test(gpu)) tier='medium';
+  else if(/Apple M\d+(?! (Pro|Max|Ultra))/i.test(gpu)||/Apple GPU/i.test(gpu)) tier='high';   // base M-series: MacBook Air, base MacBook Pro, iMac, Mac mini
+  var st=load();
+  if(st.gpu!==gpu){st={gpu:gpu};save(st)}             // new machine or browser: forget old steps
+  if(st.cap&&Q.indexOf(st.cap)<0){st.cap=Q[0];save(st)}            // a step from a build with other presets
+  window.__skfTier=st.cap&&Q.indexOf(st.cap)<Q.indexOf(tier)?st.cap:tier;
+
+  var frames=[], last=0, settleT=0, lastState='', lastStep=0;
+  function eng(){var s=window.__sf;return s&&s.engine}
+  function capIdx(){var s=load();return s.cap?Q.indexOf(s.cap):99}
+  function apply(E){   // keep the engine at or under the remembered cap (world loads re-apply the saved quality)
+    var ci=capIdx(), qi=Q.indexOf(E.quality);
+    if(ci<99&&qi>ci){E.setQuality(Q[ci])}
+    var s=load(); E.minScale=s.min||.6; shadowLods(E);
+  }
+  function shadowLods(E){   // keep mid-detail tree shadows to the near cascades on the lighter presets
+    var V=window.__sf&&window.__sf.veg; if(!V||!V.lods) return;
+    var far=E.preset&&E.preset.treeLod1>120?3:1;
+    V.lods.forEach(function(l){l[1]&&l[1].parts.forEach(function(p){p.mesh.userData.shadowLod=far})});
+  }
+  document.addEventListener('change',function(e){   // the player picked a quality: start over from it
+    if(e.target&&e.target.id==='sQ'){var s=load();delete s.cap;delete s.min;save(s);var E=eng();if(E)E.minScale=.6;frames=[];settleT=performance.now()+3000}
+  },true);
+  function step(E,med,p90){
+    var s=load(), qi=Q.indexOf(E.quality), now=performance.now();
+    if(now-lastStep<6000) return;
+    if(E.drs&&E.scale>(E.minScale||.6)+.03) return;               // dynamic resolution still has room: let it work first
+    if(qi>0){s.cap=Q[qi-1];save(s);E.setQuality(s.cap);shadowLods(E);lastStep=now;settleT=now+4000;frames=[];
+      try{console.info('[skyfall] '+Math.round(1000/med)+' fps: quality -> '+s.cap)}catch(e){}return}
+    var m=E.minScale||.6;
+    if(m>.42){s.min=Math.max(.42,+(m-.08).toFixed(2));save(s);E.minScale=s.min;E.drs=true;lastStep=now;settleT=now+3000;frames=[];
+      try{console.info('[skyfall] '+Math.round(1000/med)+' fps: resolution floor -> '+s.min)}catch(e){}}
+  }
+  function tick(t){
+    requestAnimationFrame(tick);
+    var E=eng(), g=window.__game; if(!E||!g) {last=t;return}
+    if(E.__skfSeen!==E){E.__skfSeen=E;apply(E)}
+    var stt=g.state; if(stt!==lastState){lastState=stt;settleT=t+3000;frames=[];if(stt==='menu'||stt==='fly')apply(E)}
+    var dt=t-last; last=t;
+    if(stt!=='fly'||g.paused||document.hidden||t<settleT||dt<=0||dt>1000){return}
+    frames.push(dt);
+    if(frames.length>=150){   // ~3-5 s of flight
+      var a=frames.slice().sort(function(x,y){return x-y}), med=a[a.length>>1], p90=a[Math.floor(a.length*.9)];
+      frames=[];
+      if(med>28||(med>22&&p90>45)) step(E,med,p90);   // steady low fps, not one-off hitches
+    }
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+<style>#hud.intense:after{right:auto;left:50%;transform:translateX(-50%);bottom:1.2vh}#zoneI.on{opacity:1!important}</style>
+<style id="sf-v97">
+/* v9.7: blue ring marker */
+#bluep{pointer-events:none;opacity:0;text-align:center;white-space:nowrap;text-shadow:0 1px 10px #000000b3;transition:opacity .3s;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+#bluep i{border-left:7px solid #0000;border-right:7px solid #0000;border-bottom:11px solid #19c3e6;filter:drop-shadow(0 1px 6px #0009);transform-origin:50%;width:0;height:0;margin:0 auto 4px;display:block}
+#bluep b{letter-spacing:.3em;text-indent:.3em;color:#7fdcf2;font-size:10px;font-weight:600;display:block}
+#bluep span{letter-spacing:.08em;color:var(--ink);margin-top:2px;font-size:12px;font-weight:300;display:block}
+#bluep.edge b,#bluep.edge span{opacity:.85}
+/* v9.7: quest levels, course options and high scores in the play menu and on the results */
+.mq .qh.lvl{margin:12px 0 2px;letter-spacing:.2em;text-transform:uppercase;font-size:10px;color:var(--dim)}
+.mq .qh.lvl:first-child,.mq .qa+.qh.lvl{margin-top:2px}
+.mq .qh.lvl.ok{color:#ffb27a}
+.mq .q.locked{opacity:.42}
+.mq .q.locked em{color:var(--faint)}
+.sfo{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 4px}
+.sfb{all:unset;cursor:pointer;font-size:11.5px;letter-spacing:.08em;padding:6px 11px;border:1px solid var(--faint);color:var(--dim);transition:border-color .2s,color .2s}
+.sfb.on{border-color:var(--acc);color:#fff}
+.sfb.blue.on{border-color:#19c3e6}
+.sfhs{margin:2px 0 4px;padding-left:22px;font-size:12.5px;color:var(--ink)}
+.sfhs li{margin:2px 0}.sfhs b{font-weight:600;margin-right:10px;font-variant-numeric:tabular-nums}.sfhs span{color:var(--dim);font-size:11px}
+/* v9.7: hidden UI (H) hides the HUD but keeps the cinematic bars and the location title; the radio and the
+   fullscreen button stay out of the picture in flight unless the radio is playing */
+#hud.hoff>:not(#bars):not(#title){opacity:0!important;pointer-events:none!important}
+#hud.hoff:not(.hidden)~#dock:not(.ron){opacity:0!important;pointer-events:none!important}
+</style>
+<script>setInterval(function(){var d=document.getElementById('dock'),r=window.__radio;if(d)d.classList.toggle('ron',!!(r&&r.on))},300)</script>
 </head>
 <body>
 <canvas id="gl"></canvas>
@@ -47,8 +147,8 @@
   var LIST=[["cE0wfjsybIQ", "Noisestorm - Crab Rave"], ["gCYcHz2k5x0", "Martin Garrix - Animals"], ["K_yBUfMGvzc", "Deorro - Five Hours"], ["iLBBRuVDOo4", "Vicetone & Tony Igy - Astronomia"], ["uiyUOrr5Ieo", "Martin Garrix - Bouncybob (Feat. Justin Mylo & Mesto)"], ["jjx2oc2NRzA", "Oliver Heldens - Gecko"], ["AnMhdn0wJ4I", "Vicetone - Nevada (ft. Cozi Zuehlsdorff)"], ["JbyX8NE1Was", "Martin Garrix - Proxy"], ["y6120QOlsfU", "Darude - Sandstorm"], ["y5tMw-dgLkI", "Oliver Heldens - Koala"], ["AWpLZtdeBgQ", "Timmy Trumpet & Savage - Freaks"], ["a0fkNdPiIL4", "Benny Benassi - Satisfaction"], ["gl2p4G3CUrI", "Steve Aoki, Chris Lake & Tujamo - Boneless"], ["9vMh9f41pqE", "Dimitri Vegas, Martin Garrix, Like Mike - Tremor"], ["o_VASDmGEtM", "Nuplasma Disney Store - Now or Never..."], ["I41CX0RdmPQ", "DVBBS & Borgeous - TSUNAMI"], ["_o-XIryB2gg", "Dimitri Vegas, MOGUAI & Like Mike - Mammoth"], ["114rxHa0qzo", "Exyl - Egg"], ["jwGKL4KwQYY", "akiaura, LONOWN, Baby Jane - Deathwish (Sped Up)"], ["YJVmu6yttiw", "SKRILLEX - Bangarang feat. Sirah"], ["Oy9V_4im0wg", "Don Diablo - Cutting Shapes"], ["souJM4aCk6w", "Tujamo - Drop That Low (When I Dip)"], ["u31thuMehjM", "FISHER - Losing It"], ["zyXmsVwZqX4", "Cartoon, Jéja - Why We Lose (feat. Coleman Trapp)"], ["j7QyRa1HLcU", "rivoices - etérea"], ["NFB6Y2Qt8ag", "Tokyo Machine - ROCK IT"], ["6y_NJg-xoeE", "Nitro Fun - New Game"], ["XoLouT7TqZY", "MDK - Press Start"], ["Qg1qZq5yjps", "Teminite & Panda Eyes - Highscore"]];
   // the radio streams from YouTube, so it is free: no ad to unlock it
   try{if(!localStorage.getItem('skyfall.radio'))localStorage.setItem('skyfall.radio',JSON.stringify({unlocked:true,t:Date.now()}))}catch(e){}
-  var HOST='https://www.youtube-nocookie.com';
-  var yt=null, ytReady=null, box=null, curId='', wantVol=-1, loadT=0;
+  var HOSTS=['https://www.youtube-nocookie.com','https://www.youtube.com'], hostI=0;
+  var yt=null, apiP=null, box=null, curId='', wantVol=-1, loadT=0, playedId='', broken=false, fails=0, wd=0, hideT=0, gen=0, sound=false, userMuted=false;
 
   function css(){
     var s=document.createElement('style');
@@ -56,38 +156,99 @@
       '#sfYT.off{opacity:0;transform:translateY(12px);pointer-events:none}#sfYT iframe{width:200px;height:200px;display:block}'+
       '#sfYT .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font:14px/24px system-ui;cursor:pointer;z-index:2}'+
       '#sfYT .lab{position:absolute;left:8px;top:8px;z-index:2;font:600 10px/1 system-ui;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,.55);padding:4px 6px;border-radius:4px;pointer-events:none}'+
+      '@keyframes sfYTp{0%,100%{box-shadow:0 0 0 0 rgba(255,106,43,.9)}50%{box-shadow:0 0 0 6px rgba(255,106,43,0)}}#sfYT.tap{animation:sfYTp 1.4s infinite;border-color:#ff6a2b}'+
+      '#sfYT .tip{position:absolute;left:8px;right:8px;bottom:44px;z-index:2;font:700 12px/1.3 system-ui;text-align:center;color:#fff;background:rgba(255,106,43,.92);padding:6px 8px;border-radius:6px;pointer-events:none;display:none}#sfYT.tap .tip{display:block}'+
       '@media (max-height:520px){#sfYT{left:10px;bottom:10px}}';
     document.head.appendChild(s);
   }
   function guard(el){['keydown','keyup','pointerdown','pointerup','touchstart','touchend','wheel'].forEach(function(t){el.addEventListener(t,function(e){e.stopPropagation()})})}
-  function ensure(){
-    if(ytReady) return ytReady;
+  function frame(){
+    if(box) return;
     css();
     box=document.createElement('div'); box.id='sfYT'; box.className='off';
-    box.innerHTML='<span class="lab">RADIO</span><button class="x" aria-label="Close radio">×</button><div id="sfYTp"></div>';
+    box.innerHTML='<span class="lab">RADIO</span><button class="x" aria-label="Close radio">×</button><div id="sfYTp"></div><div class="tip">Tap the video once to start the radio with sound</div>';
     document.body.appendChild(box); guard(box);
     box.querySelector('.x').onclick=function(e){e.stopPropagation();var R=window.__radio;R&&R.pause()};
-    ytReady=new Promise(function(res){
+  }
+  // the YouTube API script, loaded once
+  function api(){
+    if(apiP) return apiP;
+    frame();
+    apiP=new Promise(function(res){
+      if(window.YT&&YT.Player){res();return}
       var prev=window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady=function(){ if(prev)try{prev()}catch(e){}
-        yt=new YT.Player('sfYTp',{host:HOST,width:200,height:200,playerVars:{playsinline:1,rel:0,modestbranding:1,controls:1,fs:0,iv_load_policy:3},
-          events:{onReady:function(){res(yt)},
-            onStateChange:function(e){var R=window.__radio;if(!R)return;
-              if(e.data===0){R.next()}                                    // ended
-              else if(e.data===1){show();if(!R.on){R.on=true;R.show()}}  // playing (also when started from YouTube's own controls)
-              else if(e.data===2&&R.on&&curIsYT()&&Date.now()-loadT>1500){R.on=false;R.show();hide()}},   // paused from YouTube's controls, not a song change
-            onError:function(){var R=window.__radio;if(R){R.show('Skipping a song YouTube will not play here');setTimeout(function(){R.next()},400)}}}});
-      };
+      window.onYouTubeIframeAPIReady=function(){if(prev)try{prev()}catch(e){}res()};
       var s=document.createElement('script'); s.src='https://www.youtube.com/iframe_api'; s.async=true;
-      s.onerror=function(){var R=window.__radio;R&&(R.on=false,R.show('Radio needs YouTube, which is blocked here'))};
+      s.onerror=function(){apiP=null;var R=window.__radio;R&&(R.on=false,R.show('Radio needs YouTube, which is blocked here'))};
       document.head.appendChild(s);
     });
-    return ytReady;
+    return apiP;
+  }
+  function st(){try{return yt&&yt.getPlayerState?yt.getPlayerState():-9}catch(e){return -9}}
+  // A fresh player (new iframe) for this video. Used the first time and whenever the old one stalls or errors:
+  // some browsers leave a reused embed on the YouTube logo after a few track changes, a new one always starts clean.
+  function create(id){
+    return new Promise(function(res){
+      if(yt){try{yt.destroy()}catch(e){}yt=null}
+      var old=document.getElementById('sfYTp'); if(old) old.remove();
+      var d=document.createElement('div'); d.id='sfYTp'; box.insertBefore(d,box.querySelector('.tip'));
+      broken=false; playedId=''; wantVol=-1; sound=false; curId=id; loadT=Date.now(); var g=++gen;
+      var p=new YT.Player('sfYTp',{host:HOSTS[hostI],width:200,height:200,videoId:id,
+        playerVars:{autoplay:1,playsinline:1,rel:0,modestbranding:1,controls:1,fs:0,iv_load_policy:3,origin:location.origin},
+        events:{onReady:function(){if(g!==gen){try{p.destroy()}catch(e){}return}yt=p;vol();try{p.playVideo()}catch(e){}res(p)},onStateChange:onState,onError:onErr,onAutoplayBlocked:function(){if(g===gen)needTap()}}});
+      setTimeout(function(){if(g===gen&&yt!==p){yt=p;broken=true}res(p)},8000);   // never ready: the watchdog takes it from here
+    });
+  }
+  // Firefox, Safari and Brave block a video from starting with sound unless the tap happened inside the YouTube
+  // player itself (a tap on our radio button does not count, it is another site's page). YouTube then plays it
+  // muted, or not at all. The player stays up with a clear prompt; after that one tap the same player keeps the
+  // sound for every next song, so songs change inside it instead of replacing it.
+  function needTap(){var R=window.__radio;if(!box)return;box.classList.add('tap');show();
+    var t=box.querySelector('.tip');if(t)t.textContent=st()===1?'Tap the video to turn the radio sound on':'Tap the video once to start the radio with sound';
+    R&&R.show('Tap the video to start the radio sound')}
+  function soundCheck(){                                       // playing but muted by the browser: ask for the tap
+    if(!yt||!yt.isMuted)return;var m=false;try{m=yt.isMuted()}catch(e){}
+    if(st()===1&&m&&!userMuted)needTap();                       // no unMute() from here: Safari pauses a video unmuted without a tap
+    else if(st()===1&&!m){if(!sound){sound=true;wantVol=-1;vol()}box.classList.remove('tap')}
+  }
+  function onState(e){
+    var R=window.__radio; if(!R||!curIsYT()) return;
+    if(e.data===1){                                            // playing (also when started from YouTube's own controls)
+      playedId=curId; fails=0; clearTimeout(wd); clearTimeout(hideT); show();
+      if(!R.on){R.on=true;R.show()}
+      soundCheck();
+    } else if(e.data===0){ if(R.on) R.next() }                  // ended
+    else if(e.data===2){
+      if(playedId!==curId){ if(R.on&&!box.classList.contains('tap'))try{yt.playVideo()}catch(x){} return }   // a hiccup while the new song loads
+      if(R.on&&Date.now()-loadT>1500){R.on=false;R.show();clearTimeout(hideT);hideT=setTimeout(function(){if(!R.on)hide()},4000)}  // paused from YouTube's controls
+    }
+  }
+  function onErr(e){
+    var R=window.__radio; if(!R) return; broken=true; fails++;
+    if(fails>=6){R.on=false;R.show('YouTube will not play the radio in this browser right now');ytPause();fails=0;return}
+    R.show('Skipping a song YouTube will not play here'); if(R.on) setTimeout(function(){R.next()},400);
+  }
+  // If a song has not started a few seconds after it was asked for, first swap in a fresh player (fixes an embed
+  // stuck on the YouTube logo); if a fresh one does not start either, autoplay is blocked in this browser and the
+  // video needs one click; if it keeps buffering, try the other YouTube host, then give up politely.
+  var tryId='', tries=0;
+  function watch(id){
+    clearTimeout(wd); if(tryId!==id){tryId=id;tries=0}
+    wd=setTimeout(function(){
+      var R=window.__radio; if(!R||!R.on||curId!==id||playedId===id) return;
+      var s=st(); tries++;
+      if(s===-1||s===2||s===5){needTap();return}
+      if(tries===1){broken=true;R.play();return}
+      fails++;
+      if(fails>=3){R.on=false;R.show('YouTube will not play the radio in this browser right now');ytPause();fails=0;return}
+      hostI=1-hostI; broken=true; R.play();
+    },7000);
   }
   function curIsYT(){var R=window.__radio,t=R&&R.track;return !!(t&&t.yt)}
+  setInterval(function(){var R=window.__radio;if(R&&R.on&&curIsYT()&&yt&&!sound)soundCheck()},1500);
   // Where the player sits: it must stay fully visible while it plays (YouTube's rule), so instead of hiding it
   // the player moves to whichever free spot covers the least of the game's own UI: next to the radio pill
-  // while flying, out of the way of the pause menu, results, map and other menus. Re-checked every 400 ms.
+  // while flying, out of the way of the pause menu, results, map and other menus. Re-checked when the game state changes.
   var spot='', SZ=200, M=12;
   function shown(el){try{if(el.checkVisibility)return el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})}catch(e){}return true}
   function uiRects(W,H){
@@ -120,12 +281,19 @@
     spot=best; var q=C[best]; if(!q) return;
     box.style.left=q[0]+'px'; box.style.top=q[1]+'px'; box.style.bottom='auto';
   }
-  setInterval(function(){if(box&&!box.classList.contains('off'))place()},400);
+  // re-check when the screen changes (game state, window size); while flying the HUD layout is fixed, so the
+  // DOM is only scanned once per state change and then every few seconds, never per frame
+  var lastSt='', lastScan=0;
+  setInterval(function(){
+    if(!box||box.classList.contains('off')) return;
+    var g=window.__game, st=g?g.state+(g.paused?'p':''):'', now=Date.now();
+    if(st!==lastSt||now-lastScan>(st==='fly'?6000:1500)){lastSt=st;lastScan=now;place()}
+  },250);
   addEventListener('resize',function(){box&&!box.classList.contains('off')&&place()});
   function show(){place();box&&box.classList.remove('off')}
   function hide(){box&&box.classList.add('off')}
   function vol(){var R=window.__radio;if(!yt||!R||!yt.setVolume)return;var v=Math.round(Math.min(1,(R.vol==null?.7:R.vol)*(R.ducked?.3:1))*100);if(v!==wantVol){wantVol=v;try{yt.setVolume(v)}catch(e){}}}
-  function ytPause(){try{yt&&yt.pauseVideo&&yt.pauseVideo()}catch(e){}hide()}
+  function ytPause(){clearTimeout(wd);try{yt&&yt.pauseVideo&&yt.pauseVideo()}catch(e){}box&&box.classList.remove('tap');hide()}
 
   function install(R){
     if(R.__yt) return; R.__yt=true;
@@ -138,20 +306,30 @@
         this.arrange();}
       return this.list.length;
     };
+    var seq=0;
     R.play=async function(){
+      var my=++seq;
       await this.load();
       var t=this.track;
       if(!t||!t.yt){ytPause();return O.play()}
       try{this.a&&this.a.pause()}catch(e){}
       this.on=true; this.cur=t; this.show();
-      var p=await ensure(); show(); vol();
-      try{ loadT=Date.now(); if(curId!==t.yt){curId=t.yt;p.loadVideoById(t.yt)} else p.playVideo() }catch(e){}
+      await api(); if(my!==seq) return;              // a newer play/next came in while the API loaded
+      show(); box.classList.remove('tap'); clearTimeout(hideT);
+      try{
+        // one player for the whole session: the next song loads inside it, so a browser that needed one tap keeps the
+        // sound; a stuck or failed player is replaced (watchdog), with the stuck-on-logo case covered there
+        if(!yt||broken||st()===-9){await create(t.yt);if(my!==seq)return}
+        else if(curId!==t.yt){curId=t.yt;loadT=Date.now();playedId='';yt.loadVideoById(t.yt)}
+        else if(st()!==1) yt.playVideo();
+      }catch(e){broken=true}
+      vol(); watch(t.yt);
     };
-    R.pause=function(){ if(curIsYT()){this.on=false;ytPause();this.show()} else O.pause() };
+    R.pause=function(){ if(curIsYT()){seq++;this.on=false;ytPause();this.show()} else O.pause() };
     R.next=function(){ if(!this.list.length) return this.play(); this.i=(this.i+1)%this.list.length; this.cur=null;
       if(this.on) this.play(); else { if(curIsYT()) curId=''; this.show() } };
     R.prev=function(){ if(!this.list.length) return this.play(); this.i=(this.i-1+this.list.length)%this.list.length; this.cur=null;
-      if(this.on) this.play(); else this.show() };
+      if(this.on) this.play(); else { if(curIsYT()) curId=''; this.show() } };
     R.setVol=function(v){O.setVol(v);vol()};
     R.duck=function(e){O.duck(e);vol()};
   }
